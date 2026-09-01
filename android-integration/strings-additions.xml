@@ -1,0 +1,2 @@
+<!-- add this inside res/values/strings.xml -->
+<string name="accessibility_service_description">Lets MYRAA see your screen and perform taps, swipes, and typing on your behalf, only while you have this turned on.</string>
