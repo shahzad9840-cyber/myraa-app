@@ -44,7 +44,7 @@ else:
                 "    }\n"
                 "\n"
                 "    @Override\n"
-                "    protected void onResume() {\n"
+                "    public void onResume() {\n"
                 "        super.onResume();\n"
                 "        // Re-assert our WebChromeClient every resume, in case anything\n"
                 "        // else in the WebView setup replaces it after onCreate.\n"
@@ -119,3 +119,4 @@ with open(path, "w", encoding="utf-8") as f:
     f.write(content)
 
 print(f"Patched {path}")
+                
