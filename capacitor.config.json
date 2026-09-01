@@ -1,0 +1,9 @@
+{
+  "appId": "ai.myraa.mobile",
+  "appName": "MYRAA",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#020205"
+  }
+}
