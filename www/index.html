@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#020205" />
+    <title>MYRAA</title>
+    <script>
+      // Android WebView has no navigator.mediaDevices.getDisplayMedia.
+      // This shims it using our native ScreenShare plugin: it polls
+      // real screenshots from Android and paints them onto a canvas,
+      // then hands back a normal MediaStream from that canvas so the
+      // rest of the app's screen-share code works unmodified.
+      (function () {
+        if (!navigator.mediaDevices) navigator.mediaDevices = {};
+
+        navigator.mediaDevices.getDisplayMedia = async function () {
+          if (!window.Capacitor || !window.Capacitor.registerPlugin) {
+            throw new Error("Native bridge not ready yet - try again in a moment.");
+          }
+          const ScreenShare = window.Capacitor.registerPlugin("ScreenShare");
+          const { width, height } = await ScreenShare.start();
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          const stream = canvas.captureStream(5);
+
+          let running = true;
+          async function pump() {
+            while (running) {
+              try {
+                const { image } = await ScreenShare.captureFrame();
+                const img = new Image();
+                await new Promise((resolve) => {
+                  img.onload = resolve;
+                  img.onerror = resolve;
+                  img.src = image;
+                });
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              } catch (e) {
+                // No frame ready yet - keep trying.
+              }
+              await new Promise((r) => setTimeout(r, 200));
+            }
+          }
+          pump();
+
+          const track = stream.getVideoTracks()[0];
+          const originalStop = track.stop.bind(track);
+          track.stop = function () {
+            running = false;
+            ScreenShare.stop();
+            originalStop();
+          };
+
+          return stream;
+        };
+      })();
+    </script>
+    <script type="module" crossorigin src="./assets/index-D1Yb3TTp.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-W6fqiTMJ.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
