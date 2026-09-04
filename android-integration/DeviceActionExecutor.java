@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.view.KeyEvent;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import ai.myraa.mobile.plugins.PermissionsActivity;
 
 public class DeviceActionExecutor {
